@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BEST FRIEND: THE GAME</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff3d6;--ink:#1b1b2f;--panel:#ffffff;--a:#e8431f;--b:#12915a;--c:#2f4fd1;--y:#e6a700;--mut:#55556e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a14;--ink:#f1f1ff;--panel:#151528;--a:#ff7a45;--b:#39ff88;--c:#5ee6ff;--y:#ffd447;--mut:#a3a3c4}}
+:root[data-theme="dark"]{--bg:#0a0a14;--ink:#f1f1ff;--panel:#151528;--a:#ff7a45;--b:#39ff88;--c:#5ee6ff;--y:#ffd447;--mut:#a3a3c4}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;overflow-x:hidden;background-image:linear-gradient(var(--ink) 1px,transparent 1px),linear-gradient(90deg,var(--ink) 1px,transparent 1px);background-size:40px 40px;background-blend-mode:soft-light}
+.px{font-family:'Press Start 2P',monospace;line-height:1.7}
+.box{background:var(--panel);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink)}
+.btn{font-family:'Press Start 2P',monospace;font-size:.8rem;background:var(--y);color:#1b1b2f;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:16px 22px;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.btn:hover{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.btn:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--ink)}
+.blink{animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+
+/* PIN */
+#pin{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.2rem}
+#pin.hidden{display:none}
+.pc{max-width:360px;width:100%;padding:2rem 1.5rem;text-align:center}
+.pc h1{font-size:1rem;color:var(--a);margin-bottom:.8rem}
+.pc p{font-size:.6rem;color:var(--mut);margin-bottom:1.4rem}
+.slots{display:flex;gap:10px;justify-content:center;margin-bottom:1.4rem}
+.s{width:44px;height:54px;border:4px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:1.2rem;color:var(--b)}
+.s.err{background:var(--a);color:#fff;animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:240px;margin:0 auto 1rem}
+.kp button{height:58px;border:4px solid var(--ink);background:var(--bg);color:var(--ink);font-family:'Press Start 2P',monospace;font-size:1rem;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
+.kp button:active{transform:translate(4px,4px);box-shadow:none;background:var(--y)}
+.kp .z{visibility:hidden}
+#pm{height:20px;font-size:.55rem;color:var(--a)}
+#pm.ok{color:var(--b)}
+
+/* MAIN */
+#main{display:none}
+#main.show{display:block}
+.hud{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--panel);border-bottom:4px solid var(--ink);padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.5rem}
+.xp{flex:1;max-width:240px;height:14px;border:3px solid var(--ink);background:var(--bg)}
+.xp i{display:block;height:100%;width:0;background:var(--b)}
+.sl{min-height:100vh;padding:5.5rem 1.2rem 3rem;display:flex;align-items:center;justify-content:center;scroll-snap-align:start}
+.w{max-width:720px;width:100%}
+.lv{display:inline-block;background:var(--a);color:#fff;font-size:.6rem;padding:8px 12px;border:3px solid var(--ink);margin-bottom:1rem}
+.ti{font-size:clamp(1rem,4.5vw,1.7rem);margin-bottom:1.6rem}
+.ti em{font-style:normal;color:var(--a)}
+
+/* title slide */
+.hero{text-align:center}
+.hero h1{font-size:clamp(1.3rem,6.5vw,3rem);margin-bottom:1.2rem}
+.hero h1 span{color:var(--a)}
+.hero .sub{font-size:1.1rem;color:var(--mut);margin-bottom:2rem}
+.hero .pl{font-size:.65rem;margin:1.8rem 0 0;color:var(--c)}
+.hero .big{font-size:4.5rem;margin-bottom:1rem;animation:hop 1s steps(4) infinite}
+@keyframes hop{50%{transform:translateY(-14px)}}
+
+/* chat */
+.chat{padding:1.2rem;display:flex;flex-direction:column;gap:12px}
+.m{max-width:82%;padding:12px 14px;border:3px solid var(--ink);font-size:.98rem;line-height:1.5;opacity:0;transform:translateY(14px);transition:.5s}
+.m.on{opacity:1;transform:none}
+.m small{display:block;font-family:'Press Start 2P',monospace;font-size:.45rem;margin-bottom:6px;opacity:.7}
+.me{align-self:flex-start;background:var(--bg)}
+.him{align-self:flex-end;background:var(--b);color:#08140e}
+.note{margin-top:1.2rem;color:var(--mut);font-size:1rem;line-height:1.7}
+
+/* achievements */
+.ach{display:flex;gap:14px;align-items:center;padding:14px;margin-bottom:16px;opacity:0;transform:translateX(-30px);transition:.5s}
+.ach.on{opacity:1;transform:none}
+.ach .ic{font-size:2rem;width:56px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--y);border:3px solid var(--ink)}
+.ach h4{font-family:'Press Start 2P',monospace;font-size:.62rem;line-height:1.6;margin-bottom:5px}
+.ach p{font-size:.92rem;color:var(--mut);line-height:1.5}
+.ach b{margin-left:auto;font-family:'Press Start 2P',monospace;font-size:.5rem;color:var(--b);white-space:nowrap}
+
+/* stats */
+.st{padding:1.4rem}
+.row{margin-bottom:1.2rem}
+.row div:first-child{display:flex;justify-content:space-between;font-size:.55rem;margin-bottom:8px}
+.bar{height:20px;border:3px solid var(--ink);background:var(--bg)}
+.bar i{display:block;height:100%;width:0;transition:width 1.6s steps(14)}
+
+/* dialogue */
+.dlg{padding:1.4rem;min-height:300px;position:relative}
+.nm{position:absolute;top:-22px;left:14px;background:var(--c);color:#fff;border:3px solid var(--ink);padding:6px 10px;font-size:.55rem}
+#dt{font-size:1.15rem;line-height:1.75;margin-top:.8rem;min-height:190px}
+#dn{position:absolute;right:14px;bottom:10px;font-size:.6rem;cursor:pointer;background:none;border:0;color:var(--a);font-family:'Press Start 2P',monospace}
+
+/* end */
+.end{text-align:center}
+.end h2{font-size:clamp(1.1rem,5vw,2rem);margin-bottom:1.4rem}
+.end h2 em{font-style:normal;color:var(--b)}
+.end p{color:var(--mut);margin-bottom:1.6rem;font-size:1.05rem}
+#win{display:none;margin-top:1.8rem;padding:1.5rem}
+#win.show{display:block;animation:pop .5s steps(5)}
+@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
+#win h3{font-size:.8rem;color:var(--a);margin-bottom:.8rem}
+
+.potion{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:45;display:none;font-size:.5rem;padding:12px}
+.ov{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:1rem}
+.ov.open{display:flex}
+.pop{max-width:430px;width:100%;padding:2rem 1.5rem;text-align:center;position:relative}
+.pop h3{font-size:.8rem;color:var(--b);margin:.8rem 0 1rem}
+.pop p{font-size:1.05rem;line-height:1.7}
+.pop .x{position:absolute;top:8px;right:12px;background:none;border:0;font-family:'Press Start 2P',monospace;font-size:1rem;color:var(--ink);cursor:pointer}
+.cf{position:fixed;top:-20px;width:10px;height:10px;z-index:999;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media(max-width:520px){.ach b{display:none}.s{width:40px}.m{max-width:92%}}
+</style>
+</head>
+<body>
+
+<div id="pin">
+  <div class="pc box">
+    <h1 class="px">PLAYER 2<br>ENTER CODE</h1>
+    <p class="px">ONLY MY BROTHER KNOWS IT</p>
+    <div class="slots"><div class="s" id="s0"></div><div class="s" id="s1"></div><div class="s" id="s2"></div><div class="s" id="s3"></div></div>
+    <div class="kp" id="kp"></div>
+    <div id="pm" class="px"></div>
+  </div>
+</div>
+
+<div id="main">
+  <div class="hud px"><span>P2 ♥♥♥♥♥</span><div class="xp"><i id="xp"></i></div><span id="lvl">LV 1</span></div>
+
+  <section class="sl hero" id="s-hero"><div class="w">
+    <div class="big">🎮</div>
+    <h1 class="px">BEST FRIEND<br><span>THE GAME</span></h1>
+    <p class="sub">A special edition, made only for you.<br>Thank you for making my whole world special.</p>
+    <button class="btn" onclick="document.getElementById('s-l1').scrollIntoView()">▶ START</button>
+    <p class="pl px blink">PRESS START</p>
+  </div></section>
+
+  <section class="sl" id="s-l1"><div class="w">
+    <span class="lv px">LEVEL 1</span>
+    <h2 class="ti px">THE <em>HARD</em> TIMES</h2>
+    <div class="chat box" id="chat">
+      <div class="m me"><small>Tashii, AT 3AM</small>I'm honestly so tired of everythinggg. :(</div>
+      <div class="m him"><small>Zarain</small>I’m here talk to me</div>
+      <div class="m me"><small>Tashii</small>I swearrr i'm so tired of everything i just can't do this anymore, I feel like everyone would be better off without me, I feel like such a burden. :(</div>
+      <div class="m him"><small>Zarain</small>You’re not a burden bachaa tell me everything I’m not going anywhere.</div>
+      <div class="m me"><small>Tashii</small>Why do you even stay?</div>
+      <div class="m him"><small>Zarain</small>Because youu are myy chotuu saa bachaa i can't leave my bachaa</div>
+    </div>
+    <p class="note">Every message here is a little made up, but the feeling is true. When I was in trauma and my worst moments, you stayed. No judgement, no rushing me, just you.</p>
+  </div></section>
+
+  <section class="sl" id="s-ach"><div class="w">
+    <span class="lv px">LEVEL 2</span>
+    <h2 class="ti px">ACHIEVEMENTS <em>UNLOCKED</em></h2>
+    <div class="ach box"><div class="ic">🛡️</div><div><h4>THE SHIELD</h4><p>Protected me when I couldn’t protect myself.</p></div><b>+999 XP</b></div>
+    <div class="ach box"><div class="ic">🩹</div><div><h4>HEALER</h4><p>Stayed through my trauma and helped me too heal.</p></div><b>+999 XP</b></div>
+    <div class="ach box"><div class="ic">🌟</div><div><h4>MAKER OF MEMORIES</h4><p>Turned ordinary days into the best ones.</p></div><b>+999 XP</b></div>
+    <div class="ach box"><div class="ic">🌙</div><div><h4>NIGHT WATCH</h4><p>Picked up the call at the hardest hours.</p></div><b>+999 XP</b></div>
+    <div class="ach box"><div class="ic">😂</div><div><h4>MOOD FLIPPER</h4><p>Fixed my worst mood with yourr patienceee ofcc</p></div><b>+999 XP</b></div>
+  </div></section>
+
+  <section class="sl" id="s-st"><div class="w">
+    <span class="lv px">LEVEL 3</span>
+    <h2 class="ti px">PLAYER <em>STATS</em></h2>
+    <div class="st box" id="stats">
+      <div class="row"><div class="px"><span>LOYALTY</span><span>MAX</span></div><div class="bar"><i data-w="100" style="background:var(--b)"></i></div></div>
+      <div class="row"><div class="px"><span>SUPPORT</span><span>MAX</span></div><div class="bar"><i data-w="100" style="background:var(--c)"></i></div></div>
+      <div class="row"><div class="px"><span>PATIENCE WITH ME</span><span>∞</span></div><div class="bar"><i data-w="100" style="background:var(--y)"></i></div></div>
+      <div class="row"><div class="px"><span>HUMOUR</span><span>99</span></div><div class="bar"><i data-w="99" style="background:var(--a)"></i></div></div>
+      <div class="row"><div class="px"><span>HEART</span><span>MAX</span></div><div class="bar"><i data-w="100" style="background:var(--a)"></i></div></div>
+    </div>
+    <p class="note">Honestly, the game is broken. Your stats go off the chart.</p>
+  </div></section>
+
+  <section class="sl" id="s-dlg"><div class="w">
+    <span class="lv px">LEVEL 4</span>
+    <div class="dlg box"><div class="nm px">BEST FRIEND</div><div id="dt"></div><button id="dn" class="px blink">NEXT ▶</button></div>
+  </div></section>
+
+  <section class="sl" id="s-end"><div class="w end">
+    <h2 class="px">FINAL LEVEL<br>CLEARED. <em>CONTINUE?</em></h2>
+    <p>Thank you for being the best part of my story.</p>
+    <button class="btn" id="yes">▶ YES, FOREVER</button>
+    <div id="win" class="box">
+      <h3 class="px">♥ FRIENDSHIP: UNLOCKED ♥</h3>
+      <p style="margin:0">No matter what level life throws at us, I’m your Player 1 for good. Love you, brother. 🤍</p>
+    </div>
+  </div></section>
+</div>
+
+<button class="btn potion px" id="pot">🧪 OPEN WHEN LOW</button>
+<div class="ov" id="ov"><div class="pop box">
+  <button class="x" id="cl">X</button>
+  <div style="font-size:3rem">🧪</div>
+  <h3 class="px">HEALTH PORTION</h3>
+  <p>Bebuuuuuuu I know things might be a little tough right now, but just know you don't always have to act strong.
+    <br><br> You've been there for me so many times, and I just want you to know that I'm always here for you too.
+     Please don't feel like you have to deal with everything on your own. You've got me, okayyy?
+      And I know you can get through this. ❤️🫶🏻<br><br>Now come here, big huggg 🫂💗</p>
+</div></div>
+
+<script>
+var CORRECT_PIN = '2709'; // change to your own 4-digit code
+var pin = '', locked = false, ei = 0;
+var errs = ['WRONG CODE', 'TRY AGAIN BRO', 'NOT QUITE', 'ACCESS DENIED'];
+var $ = function(i){ return document.getElementById(i); };
+
+var kp = $('kp');
+['1','2','3','4','5','6','7','8','9','','0','⌫'].forEach(function(n){
+  var b = document.createElement('button');
+  b.textContent = n;
+  if (n === '') b.className = 'z';
+  else if (n === '⌫') b.onclick = del;
+  else b.onclick = function(){ add(n); };
+  kp.appendChild(b);
+});
+
+function slots(err){
+  for (var i = 0; i < 4; i++){
+    var s = $('s' + i);
+    s.textContent = i < pin.length ? '■' : '';
+    s.className = 's' + (err ? ' err' : '');
+  }
+}
+function add(n){ if (locked || pin.length >= 4) return; pin += n; slots(); if (pin.length === 4) check(); }
+function del(){ if (locked) return; pin = pin.slice(0, -1); slots(); $('pm').textContent = ''; }
+function check(){
+  locked = true;
+  if (pin === CORRECT_PIN){
+    $('pm').textContent = 'LEVEL LOADING...'; $('pm').className = 'px ok';
+    confetti();
+    setTimeout(function(){
+      $('pin').classList.add('hidden');
+      $('main').classList.add('show');
+      $('pot').style.display = 'block';
+      init();
+    }, 1000);
+  } else {
+    $('pm').textContent = errs[ei++ % errs.length]; $('pm').className = 'px';
+    slots(true);
+    setTimeout(function(){ pin = ''; slots(); $('pm').textContent = ''; locked = false; }, 1200);
+  }
+}
+document.addEventListener('keydown', function(e){
+  if ($('pin').classList.contains('hidden')) return;
+  if (e.key >= '0' && e.key <= '9') add(e.key);
+  if (e.key === 'Backspace') del();
+});
+
+function confetti(){
+  var c = ['#ffd447','#39ff88','#5ee6ff','#ff7a45','#ffffff'];
+  for (var i = 0; i < 60; i++){
+    var p = document.createElement('div');
+    p.className = 'cf';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = c[Math.floor(Math.random() * c.length)];
+    p.style.animationDuration = (2 + Math.random() * 2.5) + 's';
+    p.style.animationDelay = Math.random() * .8 + 's';
+    document.body.appendChild(p);
+    setTimeout(function(el){ el.remove(); }.bind(null, p), 5500);
+  }
+}
+
+function init(){
+  // XP bar + level counter
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement.scrollHeight - innerHeight;
+    var p = h > 0 ? Math.min(100, scrollY / h * 100) : 0;
+    $('xp').style.width = p + '%';
+    $('lvl').textContent = 'LV ' + (1 + Math.min(5, Math.floor(p / 17)));
+  });
+  // reveals
+  var io = new IntersectionObserver(function(en){
+    en.forEach(function(x){
+      if (!x.isIntersecting) return;
+      var t = x.target;
+      if (t.id === 'chat'){ t.querySelectorAll('.m').forEach(function(m, i){ setTimeout(function(){ m.classList.add('on'); }, i * 900); }); }
+      if (t.id === 'stats'){ t.querySelectorAll('i').forEach(function(b){ b.style.width = b.dataset.w + '%'; }); }
+      if (t.classList.contains('ach')){ t.classList.add('on'); }
+      if (t.id === 'dt'){ say(); }
+      io.unobserve(t);
+    });
+  }, { threshold: .3 });
+  [$('chat'), $('stats'), $('dt')].forEach(function(e){ io.observe(e); });
+  document.querySelectorAll('.ach').forEach(function(a, i){ a.style.transitionDelay = (i * .15) + 's'; io.observe(a); });
+}
+
+// RPG dialogue
+var lines = [
+  'Brother, there are things I never say out loud, so I’m saying them here.',
+  'When life got heavy, you didn’t walk away. You didn’t try to fix me like a project. You just stayed, until I could stand again.',
+  'You made my ordinary days special. Plans, jokes, long talks, even the boring moments. Somehow they all became memories because you were in them.',
+  'You’re strong but never cold, funny but never careless. You protect the people you love without making a show of it.',
+  'Whatever good I have in my life, a big part of it exists because you were there when I needed you.',
+  'Thank you. For everything. I’ll always be in your corner. 🤍'
+];
+var li = 0, timer = null, typing = false;
+function say(){
+  var el = $('dt'), txt = lines[li], k = 0;
+  typing = true; el.textContent = '';
+  clearInterval(timer);
+  timer = setInterval(function(){
+    el.textContent = txt.slice(0, ++k);
+    if (k >= txt.length){ clearInterval(timer); typing = false; }
+  }, 22);
+  $('dn').textContent = li === lines.length - 1 ? 'END ■' : 'NEXT ▶';
+}
+$('dn').onclick = function(){
+  if (typing){ clearInterval(timer); $('dt').textContent = lines[li]; typing = false; return; }
+  li = (li + 1) % lines.length;
+  say();
+};
+
+$('yes').onclick = function(){ $('win').classList.add('show'); confetti(); };
+$('pot').onclick = function(){ $('ov').classList.add('open'); };
+$('cl').onclick = function(){ $('ov').classList.remove('open'); };
+$('ov').onclick = function(e){ if (e.target === this) this.classList.remove('open'); };
+</script>
+</body>
+</html>
